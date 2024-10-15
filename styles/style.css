@@ -18,7 +18,9 @@
   /* colors */
   --rose-200: #fecdd3;
   --rose-400: #fb7185;
-  --rose-600: #e11d48;
+  --indigo-200: #c7d2fe;
+  --indigo-400: #818cf8;
+  --indigo-600: #4f46e5;
 }
 
 body {
@@ -62,6 +64,46 @@ h1 {
 #book-cards__container {
   gap: var(--size-8);
   columns: 1;
+  margin-bottom: var(--size-8);
+}
+
+.pagination__container {
+  width: 100%;
+  display: flex;
+  gap: var(--size-4);
+  margin-bottom: var(--size-8);
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination__prev-btn,
+.pagination__next-btn {
+  color: #312e81;
+  cursor: pointer;
+  padding: var(--size-2) var(--size-4);
+  border: 2px solid var(--indigo-400);
+  background-color: var(--indigo-200);
+}
+
+.pagination__prev-btn:hover,
+.pagination__next-btn:hover {
+  border: 2px solid var(--indigo-600);
+}
+
+.pagination__prev-btn {
+  border-radius: var(--size-2) 0px 0px var(--size-2);
+}
+.pagination__next-btn {
+  border-radius: 0px var(--size-2) var(--size-2) 0px;
+}
+
+.pagination__prev-btn:disabled,
+.pagination__prev-btn:disabled:hover,
+.pagination__next-btn:disabled,
+.pagination__next-btn:disabled:hover {
+  border: 2px solid var(--indigo-200);
+  cursor: not-allowed;
+  opacity: 50%;
 }
 
 @media (min-width: 640px) {
@@ -103,8 +145,8 @@ h1 {
   right: var(--size-3);
   color: inherit;
   background-color: var(--rose-200);
-  border: 2px solid var(--rose-400);
   padding: var(--size-2);
+  border: 2px solid var(--rose-400);
   border-radius: var(--size-2);
   display: flex;
   align-items: center;
@@ -153,4 +195,10 @@ h1 {
 
 .view-wishlist:hover {
   border: 2px solid var(--rose-400);
+}
+
+.pagination-container {
+  display: flex;
+  gap: var(--size-4);
+  align-items: center;
 }

@@ -34,6 +34,9 @@ function toggleFavorite(book) {
   return wishtlists.some((wishlistedItem) => wishlistedItem.id === book.id);
 }
 
+let nextUrl = null;
+let prevUrl = null;
+
 function createBookCard(bookList, book) {
   const wishlists = getWishlist();
 
@@ -97,8 +100,10 @@ function createBookCard(bookList, book) {
   bookList.appendChild(card);
 }
 
-async function fetchData() {
+async function fetchData(currPage = 1) {
+  console.log("fetchData > ", currPage);
   let url = baseUrl;
+  url = `https://gutendex.com/books/?page=${currPage}`;
 
   try {
     const response = await fetch(url);
@@ -107,21 +112,122 @@ async function fetchData() {
     }
 
     const data = await response.json();
-
-    const loader = document.getElementById("loader-wrapper");
-    loader.style.display = "none";
-
-    const bookList = document.getElementById("book-cards__container");
-    bookList.innerHTML = "";
-
-    data.results.forEach((book) => {
-      createBookCard(bookList, book);
-    });
-
-    bookList.style.display = "block";
+    console.log(data.previous, data.next);
+    return data;
   } catch (error) {
     console.error("Error in fetchData:", error.message);
   }
 }
 
-document.addEventListener("DOMContentLoaded", fetchData);
+function render(data, bookList) {
+  bookList.innerHTML = "";
+
+  data.results.forEach((book) => {
+    createBookCard(bookList, book);
+  });
+}
+
+async function fetchAndRender() {
+  let currPage = 1;
+
+  try {
+    const data = await fetchData(currPage);
+    let isPrevNull = data.previous === null;
+    let isNextNull = data.next === null;
+
+    const loader = document.getElementById("loader-wrapper");
+    loader.style.display = "none";
+    const bookList = document.getElementById("book-cards__container");
+    bookList.style.display = "block";
+    const content = document.getElementById("content__container");
+
+    render(data, bookList);
+
+    const paginationContainer = document.createElement("div");
+    const prev = document.createElement("button");
+    const next = document.createElement("button");
+
+    paginationContainer.className = "pagination-container";
+    prev.className = "pagination__prev-btn";
+    next.className = "pagination__next-button";
+
+    prev.textContent = "← Previous";
+    next.textContent = "Next →";
+
+    paginationContainer.className = "pagination__container";
+    prev.classList = "pagination__prev-btn";
+    next.classList = "pagination__next-btn";
+
+    prev.addEventListener("click", async (event) => {
+      event.preventDefault();
+
+      if (!isPrevNull) {
+        currPage--;
+
+        content.style.display = "none";
+        loader.style.display = "flex";
+
+        const data = await fetchData(currPage);
+        isPrevNull = data.previous === null;
+        isNextNull = data.next === null;
+
+        isPrevNull
+          ? prev.setAttribute("disabled", "true")
+          : prev.removeAttribute("disabled");
+
+        isNextNull
+          ? next.setAttribute("disabled", "true")
+          : next.removeAttribute("disabled");
+
+        content.style.display = "block";
+        loader.style.display = "none";
+
+        render(data, bookList);
+      }
+    });
+
+    next.addEventListener("click", async (event) => {
+      event.preventDefault();
+
+      if (!isNextNull) {
+        currPage++;
+
+        content.style.display = "none";
+        loader.style.display = "flex";
+
+        const data = await fetchData(currPage);
+        isPrevNull = data.previous === null;
+        isNextNull = data.next === null;
+        isPrevNull
+          ? prev.setAttribute("disabled", "true")
+          : prev.removeAttribute("disabled");
+
+        isNextNull
+          ? next.setAttribute("disabled", "true")
+          : next.removeAttribute("disabled");
+
+        content.style.display = "block";
+        loader.style.display = "none";
+
+        render(data, bookList);
+      }
+    });
+
+    isPrevNull
+      ? prev.setAttribute("disabled", "true")
+      : prev.removeAttribute("disabled");
+
+    isNextNull
+      ? next.setAttribute("disabled", "true")
+      : next.removeAttribute("disabled");
+
+    paginationContainer.appendChild(prev);
+    paginationContainer.appendChild(next);
+
+    content.appendChild(paginationContainer);
+  } catch (error) {
+    console.error("Error in fetchAndRender:", error.message);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", fetchAndRender);
