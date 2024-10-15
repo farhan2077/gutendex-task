@@ -2,13 +2,13 @@
 
 ## Todos
 
-1. Fetch data from the following public API: https://gutendex.com/books
+1. ~~Fetch data from the following public API: https://gutendex.com/books~~
 
    For API Documentation, visit - https://gutendex.com/
 
-2. Display the list of books in a clean and user-friendly format.
+2. ~~Display the list of books in a clean and user-friendly format.~~
 
-3. Each book should display the title, author, cover image, author name, genre, and id.
+3. ~~Each book should display the title, author, cover image, author name, genre, and id.~~
 
 4. Functionalities:
 
