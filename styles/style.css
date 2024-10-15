@@ -9,10 +9,16 @@
 }
 
 :root {
+  --size-1: 0.25rem;
   --size-2: 0.5rem;
   --neg-size-2: -0.5rem;
+  --size-3: 0.75rem;
   --size-4: 1rem;
   --size-8: 2rem;
+  /* colors */
+  --rose-200: #fecdd3;
+  --rose-400: #fb7185;
+  --rose-600: #e11d48;
 }
 
 body {
@@ -64,13 +70,13 @@ h1 {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   #book-cards__container {
     columns: 4;
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   #book-cards__container {
     columns: 5;
   }
@@ -91,13 +97,18 @@ h1 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.book-card__wishlist {
+.book-card__wishlist-toggler {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: plum;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
+  top: var(--size-3);
+  right: var(--size-3);
+  color: inherit;
+  background-color: var(--rose-200);
+  border: 2px solid var(--rose-400);
+  padding: var(--size-2);
+  border-radius: var(--size-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .book-card__body {
@@ -125,4 +136,21 @@ h1 {
   margin-top: var(--neg-size-2);
   color: grey;
   font-size: 0.8rem;
+}
+
+.view-wishlist {
+  color: black;
+  font-size: var(--size-4);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--size-1);
+  background-color: var(--rose-200);
+  border: 2px solid var(--rose-200);
+  border-radius: var(--size-2);
+  padding: var(--size-1) var(--size-2);
+}
+
+.view-wishlist:hover {
+  border: 2px solid var(--rose-400);
 }
