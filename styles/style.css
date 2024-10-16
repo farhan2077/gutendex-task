@@ -31,6 +31,7 @@ body {
 }
 
 h1 {
+  color: grey;
   font-weight: 600;
   font-size: var(--size-8);
 }
@@ -58,7 +59,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: var(--size-4) 0px;
+  margin: var(--size-4) 0px var(--size-8) 0px;
 }
 
 #book-cards__container {
@@ -161,7 +162,9 @@ h1 {
 
 .book-card__title {
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: var(--size-4);
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .book-card__authors {
@@ -201,4 +204,70 @@ h1 {
   display: flex;
   gap: var(--size-4);
   align-items: center;
+}
+
+#book-details__container {
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-8);
+}
+
+@media (min-width: 640px) {
+  #book-details__container {
+    flex-direction: row;
+  }
+}
+
+.book-details__img {
+  margin: 0 auto;
+  width: 50%;
+  border-radius: var(--size-2);
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.book-details__title {
+  font-size: var(--size-8);
+  font-weight: 500;
+}
+
+.book-details__authors {
+  margin: var(--size-4) 0px var(--size-2) 0px;
+  font-style: italic;
+  color: gray;
+}
+
+.book-details__languages {
+  display: flex;
+  gap: var(--size-1);
+  align-items: center;
+}
+
+.book-details__languages-item {
+  width: var(--size-4);
+  height: var(--size-4);
+  border-radius: var(--size-1);
+}
+
+.book-details__id {
+  font-weight: 600;
+  color: gray;
+  margin-bottom: var(--size-2);
+}
+
+.book-details__downloads {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

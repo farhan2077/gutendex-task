@@ -16,15 +16,15 @@
 
 ### User Interface
 
-- [ ] Make a homepage that will show the books list, a wishlist page that will show the wishlisted books list, and each book page that will show the book details.
+- [x] Make a homepage that will show the books list, a wishlist page that will show the wishlisted books list, and each book page that will show the book details.
 - [x] Make a navbar.
 - [x] Design the layout using HTML and CSS.
-- [ ] Ensure that the application is fully responsive and works well on both desktop and mobile devices.
+- [x] Ensure that the application is fully responsive and works well on both desktop and mobile devices.
 - [x] Use Bootstrap or Tailwind CSS to style the application. But vanilla CSS will be more preferable.
 
 ### Optional Bonus Features
 
-- [ ] Implement smooth animations for showing or hiding books.
+- [x] Implement smooth animations for showing or hiding books.
 - [ ] Use localStorage to save the user’s search and filter preferences so they persist when the page is refreshed.
 
 ### Notes

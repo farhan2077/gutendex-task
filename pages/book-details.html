@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book details | Gutendex-task</title>
+    <link
+      rel="shortcut icon"
+      href="../assets/favicon.ico"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="../styles/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"
+    />
+    <style>
+      .loader {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .loader::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: conic-gradient(from 360deg, #4f46e5, #e0e7ff);
+        animation: fill 3s linear infinite;
+      }
+
+      .loader::after {
+        content: "";
+        position: absolute;
+        inset: 5px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      @keyframes fill {
+        0% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(360deg);
+        }
+        100% {
+          transform: rotate(720deg);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="page-wrapper">
+      <nav class="navbar">
+        <h1>Book details</h1>
+        <a href="../index.html">← Go to home</a>
+      </nav>
+
+      <div id="loader-wrapper">
+        <div class="loader"></div>
+      </div>
+
+      <div id="book-details__container" style="display: none"></div>
+    </main>
+  </body>
+
+  <script src="../scripts/book-details.js"></script>
+</html>

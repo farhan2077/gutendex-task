@@ -61,10 +61,17 @@ function createBookCard(bookList, book) {
     this.innerHTML = isFavorite ? heartFilledSVG : heartOutlineSVG;
   };
 
+  // id
+  const bookId = book.id;
+  const id = document.createElement("div");
+  id.textContent = `#${bookId}`;
+  id.className = "book-card__id";
+
   // title
-  const title = document.createElement("h2");
+  const title = document.createElement("a");
   title.textContent = book.title;
   title.className = "book-card__title";
+  title.href = `/pages/book-details.html?id=${bookId}`;
 
   // author
   const authors = document.createElement("p");
@@ -80,13 +87,8 @@ function createBookCard(bookList, book) {
 
   // genre
   const genre = document.createElement("div");
-  genre.textContent = "classic fiction";
+  genre.textContent = "classic fiction"; // change this
   genre.className = "book-card__genre";
-
-  // id
-  const id = document.createElement("div");
-  id.textContent = `#${book.id}`;
-  id.className = "book-card__id";
 
   cardBody.appendChild(title);
   cardBody.appendChild(authors);
@@ -104,6 +106,7 @@ async function fetchData(currPage = 1) {
   console.log("fetchData > ", currPage);
   let url = baseUrl;
   url = `https://gutendex.com/books/?page=${currPage}`;
+  // url = `https://api.npoint.io/abfa29a2347ccfad4a72`;
 
   try {
     const response = await fetch(url);
