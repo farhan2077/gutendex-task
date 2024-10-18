@@ -58,13 +58,13 @@ function renderFavorites() {
 
     // id
     const id = document.createElement("div");
-    id.textContent = `#${book.id}`;
+    id.textContent = `ID: ${book.id}`;
     id.className = "book-card__id";
 
     cardBody.appendChild(title);
     cardBody.appendChild(authors);
-    cardBody.appendChild(genre);
     cardBody.appendChild(id);
+    cardBody.appendChild(genre);
 
     card.appendChild(wishlist);
     card.appendChild(coverImg);
