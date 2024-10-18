@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 const baseUrl = "https://gutendex.com/books";
 
@@ -172,8 +172,8 @@ async function handlePageChange(newPage) {
   } catch (error) {
     debug("error", "Error in handlePageChange:", error.message);
     loader.style.display = "none";
-    content.textContent = "An error occurred while fetching data.";
-    content.style.display = "block";
+    bookList.textContent = "An error occurred while fetching data.";
+    bookList.style.display = "grid";
   }
 }
 
@@ -207,7 +207,7 @@ async function initialFetchAndRender() {
     const prevButton = document.createElement("button");
     const nextButton = document.createElement("button");
 
-    paginationContainer.className = "pagination__container";
+    paginationContainer.id = "pagination__container";
     prevButton.id = "pagination__prev-btn";
     nextButton.id = "pagination__next-btn";
     prevButton.textContent = "← Previous";
@@ -269,19 +269,26 @@ async function handleSearchAndFilter() {
     loader.style.display = "flex";
     content.style.display = "none";
 
-    const data = await fetchData(url);
     const bookList = document.getElementById("book-cards__container");
+    const pagination = document.getElementById("pagination__container");
+
+    const data = await fetchData(url);
+
+    // data loading is done > hide loader and show content
+    loader.style.display = "none";
+    content.style.display = "block";
 
     if (data.results.length === 0) {
-      content.textContent = "No results found.";
+      // since no result found, no need to show pagination
+      pagination.style.display = "none";
+
+      bookList.style.display = "grid";
+      bookList.textContent = "No results found.";
     } else {
+      pagination.style.display = "flex";
       renderBooks(data, bookList);
       updatePaginationButtons(data.previous, data.next);
     }
-
-    // hide loader and show content
-    loader.style.display = "none";
-    content.style.display = "block";
   } catch (error) {
     debug("error", "Error in handleSearchAndFilter:", error.message);
     // hide loader and show error message
