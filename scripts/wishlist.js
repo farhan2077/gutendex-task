@@ -58,9 +58,10 @@ function renderFavorites() {
     };
 
     // title
-    const title = document.createElement("h2");
+    const title = document.createElement("a");
     title.textContent = book.title;
     title.className = "book-card__title";
+    title.href = `/pages/book-details.html?id=${book.id}`;
 
     // author
     const authors = document.createElement("p");
