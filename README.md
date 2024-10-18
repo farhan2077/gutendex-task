@@ -25,7 +25,7 @@
 ### Optional Bonus Features
 
 - [x] Implement smooth animations for showing or hiding books.
-- [ ] Use localStorage to save the user’s search and filter preferences so they persist when the page is refreshed.
+- [x] Use localStorage to save the user’s search and filter preferences so they persist when the page is refreshed.
 
 ### Notes
 

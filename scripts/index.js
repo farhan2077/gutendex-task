@@ -8,6 +8,31 @@ import {
   fetchData,
 } from "./common.js";
 
+function saveSearchState() {
+  const searchState = {
+    searchTerm: currentSearchTerm,
+    topic: currentTopic,
+    page: currentPage,
+  };
+  localStorage.setItem("bookSearchState", JSON.stringify(searchState));
+}
+
+function loadSearchState() {
+  const savedState = localStorage.getItem("bookSearchState");
+  if (savedState) {
+    const { searchTerm, topic, page } = JSON.parse(savedState);
+    currentSearchTerm = searchTerm;
+    currentTopic = topic;
+    currentPage = page;
+
+    document.getElementById("search-input").value = searchTerm;
+    document.getElementById("select-input").value = topic;
+
+    return true;
+  }
+  return false;
+}
+
 function createBookCard(bookList, book) {
   const wishlists = getWishlist();
 
@@ -98,9 +123,15 @@ async function handlePageChange(newPage) {
     content.style.display = "none";
 
     const data = await fetchData(url);
-    const bookList = document.getElementById("book-cards__container");
 
-    renderBooks(data, bookList);
+    if (data.results.length === 0) {
+      bookList.style.display = "grid";
+      bookList.textContent = "No results found.";
+    } else {
+      const bookList = document.getElementById("book-cards__container");
+      renderBooks(data, bookList);
+    }
+
     updatePaginationButtons(data.previous, data.next);
 
     loader.style.display = "none";
@@ -120,15 +151,25 @@ function updatePaginationButtons(prevUrl, nextUrl) {
   prevButton.disabled = !prevUrl;
   nextButton.disabled = !nextUrl;
 
+  prevButton.style.display = prevUrl ? "block" : "none";
+  nextButton.style.display = nextUrl ? "block" : "none";
+
   prevButton.onclick = prevUrl ? () => handlePageChange(currentPage - 1) : null;
   nextButton.onclick = nextUrl ? () => handlePageChange(currentPage + 1) : null;
 }
 
 async function initialFetchAndRender() {
-  let currPage = 1;
+  const hasSavedState = loadSearchState();
 
   try {
-    const data = await fetchData(`${baseUrl}/?page=${currPage}`);
+    let url = "";
+    if (hasSavedState) {
+      url = getUrlWithQueryParams(currentSearchTerm, currentTopic, currentPage);
+    } else {
+      url = `${baseUrl}/?page=1`;
+    }
+
+    const data = await fetchData(url);
 
     const loader = document.getElementById("loader-wrapper");
     const bookList = document.getElementById("book-cards__container");
@@ -182,7 +223,7 @@ let currentPage = 1;
 let currentSearchTerm = "";
 let currentTopic = "";
 
-async function handleSearchAndFilter() {
+async function refetchAndRender() {
   const searchTerm = document.getElementById("search-input").value.trim();
   const topicSelect = document.getElementById("select-input");
   const topic = topicSelect.value;
@@ -190,6 +231,8 @@ async function handleSearchAndFilter() {
   currentPage = 1; // reset to first page when search or topic changes
   currentSearchTerm = searchTerm;
   currentTopic = topic;
+
+  saveSearchState();
 
   const url = getUrlWithQueryParams(
     currentSearchTerm,
@@ -226,7 +269,7 @@ async function handleSearchAndFilter() {
       updatePaginationButtons(data.previous, data.next);
     }
   } catch (error) {
-    debug("error", "Error in handleSearchAndFilter:", error.message);
+    debug("error", "Error in refetchAndRender:", error.message);
     // hide loader and show error message
     loader.style.display = "none";
     content.innerHTML = `<div>An error occurred while fetching data. <span style="cursor: pointer; text-decoration: underline;" onclick="location.reload()">Retry again</span></div>`;
@@ -240,6 +283,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search-input");
   const topicSelect = document.getElementById("select-input");
 
-  searchInput.addEventListener("input", debounce(handleSearchAndFilter, 500));
-  topicSelect.addEventListener("change", handleSearchAndFilter);
+  searchInput.addEventListener("input", debounce(refetchAndRender, 500));
+  topicSelect.addEventListener("change", refetchAndRender);
 });
