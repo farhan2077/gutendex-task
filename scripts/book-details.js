@@ -28,6 +28,86 @@ async function fetchData(bookId) {
   }
 }
 
+function createCoverImg(data) {
+  const coverImg = document.createElement("img");
+  coverImg.src = data.formats["image/jpeg"];
+  coverImg.className = "book-details__img fade-in";
+
+  return coverImg;
+}
+
+function createTitle(data) {
+  const title = document.createElement("h2");
+  title.textContent = data.title;
+  title.className = "book-details__title";
+  return title;
+}
+
+function createAuthors(data) {
+  const authors = document.createElement("p");
+  authors.innerHTML = `${data.authors
+    .map(
+      (author) => `${author.name} (${author.birth_year} - ${author.death_year})`
+    )
+    .join(", ")}`;
+  authors.className = "book-details__authors";
+  return authors;
+}
+
+function createLanguage(data) {
+  const language = document.createElement("div");
+  language.innerHTML = `${data.languages
+    .map(
+      (lang) =>
+        `<img class="book-details__languages-item" src="https://unpkg.com/language-icons/icons/${lang}.svg" />`
+    )
+    .join(", ")}`;
+  language.className = "book-details__languages";
+  return language;
+}
+
+function createId(data) {
+  const id = document.createElement("div");
+  id.textContent = `ID: ${data.id}`;
+  id.className = "book-details__id";
+  return id;
+}
+
+function createDownloads(data) {
+  const downloads = document.createElement("div");
+  downloads.textContent = `${data.download_count} downloads`;
+  downloads.className = "book-details__downloads";
+  return downloads;
+}
+
+function createTopic(data) {
+  const topic = document.createElement("div");
+
+  topics = data.subjects[0].split(" -- ");
+
+  topic.innerHTML = `${topics[topics.length - 1]}`;
+  topic.className = "book-details__topic";
+  return topic;
+}
+
+function createDetailsContainer(data) {
+  const detailsContainer = document.createElement("div");
+  detailsContainer.className = "fade-in";
+
+  const elements = [
+    createId(data),
+    createTitle(data),
+    createTopic(data),
+    createAuthors(data),
+    createLanguage(data),
+    createDownloads(data),
+  ];
+
+  elements.forEach((el) => detailsContainer.appendChild(el));
+
+  return detailsContainer;
+}
+
 async function main() {
   try {
     if (bookId === null || bookId === "" || bookId === undefined) {
@@ -56,75 +136,6 @@ async function main() {
   } catch (e) {
     console.error("Error in main:", e.message);
   }
-}
-
-function createCoverImg(data) {
-  const coverImg = document.createElement("img");
-  coverImg.src = data.formats["image/jpeg"];
-  coverImg.className = "book-details__img fade-in";
-
-  return coverImg;
-}
-
-function createDetailsContainer(data) {
-  const detailsContainer = document.createElement("div");
-  detailsContainer.className = "fade-in";
-
-  const elements = [
-    createId(data),
-    createTitle(data),
-    createAuthors(data),
-    createLanguage(data),
-    createDownloads(data),
-  ];
-
-  elements.forEach((el) => detailsContainer.appendChild(el));
-
-  return detailsContainer;
-}
-
-function createTitle(data) {
-  const title = document.createElement("h2");
-  title.textContent = data.title;
-  title.className = "book-details__title";
-  return title;
-}
-
-function createAuthors(data) {
-  const authors = document.createElement("p");
-  authors.innerHTML = `${data.authors
-    .map(
-      (author) => `${author.name} (${author.birth_year} ${author.death_year})`
-    )
-    .join(", ")}`;
-  authors.className = "book-details__authors";
-  return authors;
-}
-
-function createLanguage(data) {
-  const language = document.createElement("div");
-  language.innerHTML = `Available in ${data.languages
-    .map(
-      (lang) =>
-        `<img class="book-details__languages-item" src="https://unpkg.com/language-icons/icons/${lang}.svg" />`
-    )
-    .join(", ")}`;
-  language.className = "book-details__languages";
-  return language;
-}
-
-function createId(data) {
-  const id = document.createElement("div");
-  id.textContent = `ID: ${data.id}`;
-  id.className = "book-details__id";
-  return id;
-}
-
-function createDownloads(data) {
-  const downloads = document.createElement("div");
-  downloads.textContent = `Downloaded ${data.download_count} times`;
-  downloads.className = "book-details__downloads";
-  return downloads;
 }
 
 document.addEventListener("DOMContentLoaded", main);
