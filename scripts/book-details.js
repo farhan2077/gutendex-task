@@ -1,32 +1,11 @@
+import { baseUrl, fetchData, debug } from "./common.js";
+
 const params = new URLSearchParams(window.location.search);
 const bookId = params.get("id");
-
-console.log({ bookId });
+const url = `${baseUrl}/${bookId}`;
 
 const loader = document.getElementById("loader-wrapper");
 const container = document.getElementById("book-details__container");
-
-async function fetchData(bookId) {
-  let url = `https://gutendex.com/books/${bookId}`;
-  console.log(`fetching data from ${url}`);
-
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      loader.style.display = "none";
-      container.style.display = "block";
-      container.textContent = response.detail;
-
-      throw new Error(`Response status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return data;
-  } catch (error) {
-    console.error("Error in fetchData:", error.message);
-  }
-}
 
 function createCoverImg(data) {
   const coverImg = document.createElement("img");
@@ -82,10 +61,8 @@ function createDownloads(data) {
 
 function createTopic(data) {
   const topic = document.createElement("div");
-
-  topics = data.subjects[0].split(" -- ");
-
-  topic.innerHTML = `${topics[topics.length - 1]}`;
+  const topics = data.subjects[0].split(" -- ");
+  topic.textContent = topics[topics.length - 1];
   topic.className = "book-details__topic";
   return topic;
 }
@@ -115,7 +92,7 @@ async function main() {
       container.style.display = "block";
       container.textContent = "Book id not valid";
     } else {
-      const data = await fetchData(bookId);
+      const data = await fetchData(url);
 
       loader.style.display = "none";
       container.style.display = "flex";
@@ -134,8 +111,10 @@ async function main() {
       }
     }
   } catch (e) {
-    console.error("Error in main:", e.message);
+    debug("error", "Error in main:", e.message);
   }
 }
 
-document.addEventListener("DOMContentLoaded", main);
+document.addEventListener("DOMContentLoaded", () => {
+  main();
+});
