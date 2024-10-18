@@ -9,8 +9,8 @@
 
 ### Functionalities
 
-- [ ] Implement a search bar that allows users to filter books by title in real-time.
-- [ ] Add a dropdown filter to filter books based on genre/topic.
+- [x] Implement a search bar that allows users to filter books by title in real-time.
+- [x] Add a dropdown filter to filter books based on genre/topic.
 - [x] Make a wishlist and store it to localStorage. Wishlisted books should have a love or liked icon. Make the icon clickable to save/remove as a wishlist.
 - [x] Implement pagination to paginate the books list. For example, (next page, previous page) or (1, 2, 3...8) pagination.
 

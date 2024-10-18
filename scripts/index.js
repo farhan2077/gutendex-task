@@ -1,3 +1,5 @@
+const DEBUG = true;
+
 const baseUrl = "https://gutendex.com/books";
 
 const heartFilledSVG = `
@@ -10,12 +12,48 @@ const heartOutlineSVG = `
   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
 </svg>`;
 
+function debug(level, ...args) {
+  // only two levels = log | error
+  if (DEBUG) {
+    if (level === "error") {
+      console.error(...args);
+    } else {
+      console.log(...args);
+    }
+  }
+}
+
 function getWishlist() {
   return JSON.parse(localStorage.getItem("wishlist")) || [];
 }
 
 function saveToWishlist(items) {
   localStorage.setItem("wishlist", JSON.stringify(items));
+}
+
+async function fetchData(url) {
+  debug(
+    "log",
+    "---------------",
+    new Date().toLocaleTimeString(),
+    "---------------"
+  );
+  debug("log", "⌛ Fetching", url);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    debug("log", "✅ Fetched", url);
+    debug("log", "prev ->", data.previous);
+    debug("log", "next ->", data.next);
+    return data;
+  } catch (error) {
+    debug("error", "Error in fetchData:", error.message);
+  }
 }
 
 function toggleFavorite(book) {
@@ -33,9 +71,6 @@ function toggleFavorite(book) {
   saveToWishlist(wishtlists);
   return wishtlists.some((wishlistedItem) => wishlistedItem.id === book.id);
 }
-
-let nextUrl = null;
-let prevUrl = null;
 
 function createBookCard(bookList, book) {
   const wishlists = getWishlist();
@@ -102,27 +137,7 @@ function createBookCard(bookList, book) {
   bookList.appendChild(card);
 }
 
-async function fetchData(currPage = 1) {
-  console.log("fetchData > ", currPage);
-  let url = baseUrl;
-  url = `https://gutendex.com/books/?page=${currPage}`;
-  // url = `https://api.npoint.io/abfa29a2347ccfad4a72`;
-
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log(data.previous, data.next);
-    return data;
-  } catch (error) {
-    console.error("Error in fetchData:", error.message);
-  }
-}
-
-function render(data, bookList) {
+function renderBooks(data, bookList) {
   bookList.innerHTML = "";
 
   data.results.forEach((book) => {
@@ -130,107 +145,157 @@ function render(data, bookList) {
   });
 }
 
-async function fetchAndRender() {
-  let currPage = 1;
+async function handlePageChange(newPage) {
+  currentPage = newPage;
+  const url = getUrlWithQueryParams(
+    currentSearchTerm,
+    currentTopic,
+    currentPage
+  );
+
+  const loader = document.getElementById("loader-wrapper");
+  const content = document.getElementById("content__container");
 
   try {
-    const data = await fetchData(currPage);
-    let isPrevNull = data.previous === null;
-    let isNextNull = data.next === null;
+    loader.style.display = "flex";
+    content.style.display = "none";
 
-    const loader = document.getElementById("loader-wrapper");
-    loader.style.display = "none";
+    const data = await fetchData(url);
     const bookList = document.getElementById("book-cards__container");
-    bookList.style.display = "block";
-    const content = document.getElementById("content__container");
 
-    render(data, bookList);
+    renderBooks(data, bookList);
+    updatePaginationButtons(data.previous, data.next);
 
-    const paginationContainer = document.createElement("div");
-    const prev = document.createElement("button");
-    const next = document.createElement("button");
-
-    paginationContainer.className = "pagination-container";
-    prev.className = "pagination__prev-btn";
-    next.className = "pagination__next-button";
-
-    prev.textContent = "← Previous";
-    next.textContent = "Next →";
-
-    paginationContainer.className = "pagination__container";
-    prev.classList = "pagination__prev-btn";
-    next.classList = "pagination__next-btn";
-
-    prev.addEventListener("click", async (event) => {
-      event.preventDefault();
-
-      if (!isPrevNull) {
-        currPage--;
-
-        content.style.display = "none";
-        loader.style.display = "flex";
-
-        const data = await fetchData(currPage);
-        isPrevNull = data.previous === null;
-        isNextNull = data.next === null;
-
-        isPrevNull
-          ? prev.setAttribute("disabled", "true")
-          : prev.removeAttribute("disabled");
-
-        isNextNull
-          ? next.setAttribute("disabled", "true")
-          : next.removeAttribute("disabled");
-
-        content.style.display = "block";
-        loader.style.display = "none";
-
-        render(data, bookList);
-      }
-    });
-
-    next.addEventListener("click", async (event) => {
-      event.preventDefault();
-
-      if (!isNextNull) {
-        currPage++;
-
-        content.style.display = "none";
-        loader.style.display = "flex";
-
-        const data = await fetchData(currPage);
-        isPrevNull = data.previous === null;
-        isNextNull = data.next === null;
-        isPrevNull
-          ? prev.setAttribute("disabled", "true")
-          : prev.removeAttribute("disabled");
-
-        isNextNull
-          ? next.setAttribute("disabled", "true")
-          : next.removeAttribute("disabled");
-
-        content.style.display = "block";
-        loader.style.display = "none";
-
-        render(data, bookList);
-      }
-    });
-
-    isPrevNull
-      ? prev.setAttribute("disabled", "true")
-      : prev.removeAttribute("disabled");
-
-    isNextNull
-      ? next.setAttribute("disabled", "true")
-      : next.removeAttribute("disabled");
-
-    paginationContainer.appendChild(prev);
-    paginationContainer.appendChild(next);
-
-    content.appendChild(paginationContainer);
+    loader.style.display = "none";
+    content.style.display = "block";
   } catch (error) {
-    console.error("Error in fetchAndRender:", error.message);
+    debug("error", "Error in handlePageChange:", error.message);
+    loader.style.display = "none";
+    content.textContent = "An error occurred while fetching data.";
+    content.style.display = "block";
   }
 }
 
-document.addEventListener("DOMContentLoaded", fetchAndRender);
+function updatePaginationButtons(prevUrl, nextUrl) {
+  const prevButton = document.getElementById("pagination__prev-btn");
+  const nextButton = document.getElementById("pagination__next-btn");
+
+  prevButton.disabled = !prevUrl;
+  nextButton.disabled = !nextUrl;
+
+  prevButton.onclick = prevUrl ? () => handlePageChange(currentPage - 1) : null;
+  nextButton.onclick = nextUrl ? () => handlePageChange(currentPage + 1) : null;
+}
+
+async function initialFetchAndRender() {
+  let currPage = 1;
+
+  try {
+    const data = await fetchData(`${baseUrl}/?page=${currPage}`);
+
+    const loader = document.getElementById("loader-wrapper");
+    const bookList = document.getElementById("book-cards__container");
+    const content = document.getElementById("content__container");
+
+    loader.style.display = "none";
+    bookList.style.display = "block";
+
+    renderBooks(data, bookList);
+
+    const paginationContainer = document.createElement("div");
+    const prevButton = document.createElement("button");
+    const nextButton = document.createElement("button");
+
+    paginationContainer.className = "pagination__container";
+    prevButton.id = "pagination__prev-btn";
+    nextButton.id = "pagination__next-btn";
+    prevButton.textContent = "← Previous";
+    nextButton.textContent = "Next →";
+
+    paginationContainer.appendChild(prevButton);
+    paginationContainer.appendChild(nextButton);
+    content.appendChild(paginationContainer);
+
+    updatePaginationButtons(data.previous, data.next);
+  } catch (error) {
+    debug("error", "Error in initialFetchAndRender:", error.message);
+  }
+}
+
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+function getUrlWithQueryParams(search, topic, page) {
+  let url = `${baseUrl}/?`;
+  const params = new URLSearchParams();
+
+  if (search) params.append("search", search);
+  if (topic) params.append("topic", topic);
+  if (page > 1) params.append("page", page);
+
+  return url + params.toString();
+}
+
+let currentPage = 1;
+let currentSearchTerm = "";
+let currentTopic = "";
+
+async function handleSearchAndFilter() {
+  const searchTerm = document.getElementById("search-input").value.trim();
+  const topicSelect = document.getElementById("select-input");
+  const topic = topicSelect.value;
+
+  currentPage = 1; // reset to first page when search or topic changes
+  currentSearchTerm = searchTerm;
+  currentTopic = topic;
+
+  const url = getUrlWithQueryParams(
+    currentSearchTerm,
+    currentTopic,
+    currentPage
+  );
+
+  const loader = document.getElementById("loader-wrapper");
+  const content = document.getElementById("content__container");
+
+  try {
+    // show loader and hide content
+    loader.style.display = "flex";
+    content.style.display = "none";
+
+    const data = await fetchData(url);
+    const bookList = document.getElementById("book-cards__container");
+
+    if (data.results.length === 0) {
+      content.textContent = "No results found.";
+    } else {
+      renderBooks(data, bookList);
+      updatePaginationButtons(data.previous, data.next);
+    }
+
+    // hide loader and show content
+    loader.style.display = "none";
+    content.style.display = "block";
+  } catch (error) {
+    debug("error", "Error in handleSearchAndFilter:", error.message);
+    // hide loader and show error message
+    loader.style.display = "none";
+    content.innerHTML = `<div>An error occurred while fetching data. <span style="cursor: pointer; text-decoration: underline;" onclick="location.reload()">Retry again</span></div>`;
+    content.style.display = "block";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initialFetchAndRender();
+
+  const searchInput = document.getElementById("search-input");
+  const topicSelect = document.getElementById("select-input");
+
+  searchInput.addEventListener("input", debounce(handleSearchAndFilter, 500));
+  topicSelect.addEventListener("change", handleSearchAndFilter);
+});

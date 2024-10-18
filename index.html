@@ -68,6 +68,34 @@
         >
       </nav>
 
+      <div class="search-filter__container">
+        <div class="search__container">
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="Search for books..."
+          />
+        </div>
+        <div class="filter__container">
+          <select
+            id="select-input"
+            class="select-input"
+            name="topics"
+            id="topics"
+          >
+            <option value="" selected>Select a topic</option>
+            <option value="adventure">Adventure</option>
+            <option value="drama">Drama</option>
+            <option value="fiction">Fiction</option>
+            <option value="history">History</option>
+            <option value="humor">Humor</option>
+            <option value="philosophy">Philosophy</option>
+            <option value="politics">Politics</option>
+          </select>
+        </div>
+      </div>
+
       <div id="loader-wrapper">
         <div class="loader"></div>
       </div>
