@@ -84,7 +84,6 @@ a {
   display: grid;
   gap: var(--size-8);
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  margin-bottom: var(--size-8);
 }
 @media (min-width: 640px) {
   #book-cards__container {
@@ -102,11 +101,11 @@ a {
   }
 }
 
-.pagination__container {
+#pagination__container {
   width: 100%;
   display: flex;
   gap: var(--size-4);
-  margin-bottom: var(--size-8);
+  margin: var(--size-8) 0px var(--size-8) 0px;
   align-items: center;
   justify-content: center;
 }
@@ -162,7 +161,6 @@ a {
   position: relative;
   width: 100%;
   border-radius: var(--size-2);
-  margin-bottom: var(--size-8);
   overflow: hidden;
   background-color: white;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
