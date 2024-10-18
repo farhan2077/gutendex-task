@@ -99,7 +99,7 @@ function createBookCard(bookList, book) {
   // id
   const bookId = book.id;
   const id = document.createElement("div");
-  id.textContent = `#${bookId}`;
+  id.textContent = `ID: ${bookId}`;
   id.className = "book-card__id";
 
   // title
@@ -110,7 +110,7 @@ function createBookCard(bookList, book) {
 
   // author
   const authors = document.createElement("p");
-  authors.textContent = `by ${book.authors
+  authors.textContent = `${book.authors
     .map((author) => author.name)
     .join(", ")}`;
   authors.className = "book-card__authors";
@@ -128,8 +128,8 @@ function createBookCard(bookList, book) {
 
   cardBody.appendChild(title);
   cardBody.appendChild(authors);
-  cardBody.appendChild(genre);
   cardBody.appendChild(id);
+  cardBody.appendChild(genre);
 
   card.appendChild(wishlist);
   card.appendChild(coverImg);
@@ -199,7 +199,7 @@ async function initialFetchAndRender() {
     const content = document.getElementById("content__container");
 
     loader.style.display = "none";
-    bookList.style.display = "block";
+    bookList.style.display = "grid";
 
     renderBooks(data, bookList);
 

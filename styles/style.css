@@ -40,6 +40,8 @@ body {
     Roboto, "Helvetica Neue", Arial, sans-serif;
   font-optical-sizing: auto;
   font-size: var(--size-4);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
@@ -79,9 +81,25 @@ a {
 }
 
 #book-cards__container {
+  display: grid;
   gap: var(--size-8);
-  columns: 1;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   margin-bottom: var(--size-8);
+}
+@media (min-width: 640px) {
+  #book-cards__container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 768px) {
+  #book-cards__container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  #book-cards__container {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .pagination__container {
@@ -123,27 +141,21 @@ a {
   opacity: 50%;
 }
 
-@media (min-width: 640px) {
-  #book-cards__container {
-    columns: 3;
-  }
-}
-
-@media (min-width: 1024px) {
-  #book-cards__container {
-    columns: 4;
-  }
-}
-
-@media (min-width: 1280px) {
-  #book-cards__container {
-    columns: 5;
-  }
-}
-
 .book-card__img {
+  height: 350px;
   width: 100%;
-  object-fit: cover;
+  scale: 1;
+  object-fit: none;
+  object-position: center;
+  filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+    drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+  overflow: hidden;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 300ms;
+  scale: 1;
+}
+.book-card__img:hover {
+  scale: 1.05;
 }
 
 .book-card {
@@ -168,6 +180,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
 .book-card__body {
@@ -181,22 +194,34 @@ a {
   font-size: var(--size-4);
   cursor: pointer;
   text-decoration: underline;
+  /* line-clamp */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .book-card__authors {
-  color: var(--gray-500);
+  font-size: var(--size-4); /* just a bit more than --size-4*/
+  color: var(--gray-700);
 }
 
 .book-card__genre {
-  text-transform: uppercase;
-  font-weight: 600;
-  color: var(--gray-500);
+  background: var(--indigo-50);
+  width: fit-content;
+  font-weight: 500;
+  font-size: var(--size-3);
+  color: var(--indigo-600);
+  border-radius: var(--size-2);
+  padding: var(--size-1) var(--size-2);
 }
 
 .book-card__id {
-  margin-top: var(--neg-size-2);
-  color: grey;
-  font-size: 0.8rem;
+  color: var(--gray-500);
+  font-weight: 500;
+  font-size: var(--size-3);
+  /* margin-bottom: var(--size-2); */
 }
 
 .view-wishlist {
@@ -235,16 +260,18 @@ a {
 }
 
 .book-details__img {
-  flex: 0 0 350px;
-  max-width: 350px;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  margin: auto;
   border-radius: 8px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
 }
-
-.book-details__img:hover {
-  transform: scale(1.02);
+@media (min-width: 768px) {
+  .book-details__img {
+    width: 300px;
+    height: 100%;
+    margin: 0px;
+  }
 }
 
 .book-details__title {
@@ -267,7 +294,6 @@ a {
   color: var(--gray-500);
   font-weight: 500;
   font-size: var(--size-3);
-  border-radius: var(--size-8);
   margin-bottom: var(--size-2);
 }
 
@@ -297,8 +323,8 @@ a {
   font-weight: 500;
   font-size: var(--size-3);
   color: var(--indigo-600);
-  border-radius: var(--size-4);
-  padding: var(--size-1) var(--size-3);
+  border-radius: var(--size-2);
+  padding: var(--size-1) var(--size-2);
 }
 
 .book-details__downloads {
@@ -344,10 +370,15 @@ a {
 }
 
 .search__container {
-  width: 70%;
+  width: 100%;
   padding: var(--size-2) var(--size-4);
   border: 2px solid var(--indigo-600);
   border-radius: var(--size-2);
+}
+@media (min-width: 640px) {
+  .search__container {
+    width: 70%;
+  }
 }
 
 .search-input {
@@ -359,10 +390,15 @@ a {
 }
 
 .filter__container {
-  width: 30%;
+  width: 100%;
   padding: var(--size-2) var(--size-4);
   border: 2px solid var(--indigo-600);
   border-radius: var(--size-2);
+}
+@media (min-width: 640px) {
+  .filter__container {
+    width: 30%;
+  }
 }
 
 .select-input {
