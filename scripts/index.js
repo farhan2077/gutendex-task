@@ -122,7 +122,8 @@ function createBookCard(bookList, book) {
 
   // genre
   const genre = document.createElement("div");
-  genre.textContent = "classic fiction"; // change this
+  const topics = book.subjects[0].split(" -- ");
+  genre.textContent = `${topics[topics.length - 1]}`;
   genre.className = "book-card__genre";
 
   cardBody.appendChild(title);

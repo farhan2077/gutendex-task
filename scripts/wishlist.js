@@ -76,7 +76,8 @@ function renderFavorites() {
 
     // genre
     const genre = document.createElement("div");
-    genre.textContent = "classic fiction"; // Example genre
+    const topics = book.subjects[0].split(" -- ");
+    genre.textContent = `${topics[topics.length - 1]}`;
     genre.className = "book-card__genre";
 
     // id
