@@ -31,3 +31,30 @@
 
 - [x] Don’t use any templates for the UI.
 - [x] You can use React JS or vanilla JS for this task, but we recommend using vanilla JS only.
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/en/) `v18.17.1`
+- [Git](https://git-scm.com/) `v2.3+`
+
+## Development
+
+1. Clone repository
+
+```sh
+git clone https://github.com/farhan2077/gutendex-task.git
+```
+
+2. Change directory
+
+```sh
+cd gutendex-task
+```
+
+3. Run local http server
+
+```sh
+npx http-server
+```
+
+Open `http://localhost:8080` in your browser.
