@@ -54,7 +54,7 @@ cd gutendex-task
 3. Run local http server
 
 ```sh
-npx http-server
+npx http-server -c-1
 ```
 
 Open `http://localhost:8080` in your browser.
