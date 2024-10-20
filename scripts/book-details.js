@@ -1,4 +1,12 @@
-import { baseUrl, fetchData, debug } from "./common.js";
+import {
+  baseUrl,
+  fetchData,
+  debug,
+  getWishlist,
+  heartFilledSVG,
+  heartOutlineSVG,
+  toggleFavorite,
+} from "./common.js";
 
 const params = new URLSearchParams(window.location.search);
 const bookId = params.get("id");
@@ -14,9 +22,39 @@ function createCoverImg(data) {
   } else {
     coverImg.src = "https://placehold.co/200x280/png";
   }
-  coverImg.className = "book-details__img fade-in";
+  coverImg.className = "book-details__img";
 
   return coverImg;
+}
+
+function createFav(data) {
+  const wishlists = getWishlist();
+  const wishlist = document.createElement("div");
+  wishlist.innerHTML = wishlists.some(
+    (wishlistedItem) => wishlistedItem.id === data.id
+  )
+    ? heartFilledSVG
+    : heartOutlineSVG;
+
+  wishlist.className = "book-card__wishlist-toggler";
+  wishlist.style.cursor = "pointer";
+
+  wishlist.onclick = function () {
+    const isFavorite = toggleFavorite(data);
+    this.innerHTML = isFavorite ? heartFilledSVG : heartOutlineSVG;
+  };
+  return wishlist;
+}
+
+function createCoverImageContainer(data) {
+  const container = document.createElement("div");
+  container.className = "fade-in";
+
+  const elements = [createCoverImg(data), createFav(data)];
+
+  elements.forEach((el) => container.appendChild(el));
+
+  return container;
 }
 
 function createTitle(data) {
@@ -101,7 +139,10 @@ async function main() {
       loader.style.display = "none";
       container.style.display = "flex";
 
-      const elements = [createCoverImg(data), createDetailsContainer(data)];
+      const elements = [
+        createCoverImageContainer(data),
+        createDetailsContainer(data),
+      ];
 
       for (let i = 0; i < elements.length; i++) {
         container.appendChild(elements[i]);

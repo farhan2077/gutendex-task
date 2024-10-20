@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 export const baseUrl = "https://gutendex.com/books";
 
