@@ -80,6 +80,22 @@ a {
   margin: var(--size-4) 0px var(--size-8) 0px;
 }
 
+.navbar-title__container {
+  display: flex;
+  align-items: center;
+  gap: var(--size-3);
+}
+
+.navbar__go-back-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--gray-200);
+  padding: var(--size-1);
+  border-radius: var(--size-1);
+}
+
 #book-cards__container {
   display: grid;
   gap: var(--size-8);
