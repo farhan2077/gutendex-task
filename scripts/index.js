@@ -78,7 +78,11 @@ function createBookCard(bookList, book) {
 
   // cover image
   const coverImg = document.createElement("img");
-  coverImg.src = book.formats["image/jpeg"];
+  if ("image/jpeg" in book.formats) {
+    coverImg.src = book.formats["image/jpeg"];
+  } else {
+    coverImg.src = "https://placehold.co/200x280/png";
+  }
   coverImg.className = "book-card__img";
 
   // genre

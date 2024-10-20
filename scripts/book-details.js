@@ -9,7 +9,11 @@ const container = document.getElementById("book-details__container");
 
 function createCoverImg(data) {
   const coverImg = document.createElement("img");
-  coverImg.src = data.formats["image/jpeg"];
+  if ("image/jpeg" in data.formats) {
+    coverImg.src = data.formats["image/jpeg"];
+  } else {
+    coverImg.src = "https://placehold.co/200x280/png";
+  }
   coverImg.className = "book-details__img fade-in";
 
   return coverImg;
